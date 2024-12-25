@@ -15,7 +15,7 @@ def execute_sql_file(database, file_path):
             host=os.getenv("DB_HOST"),  # Địa chỉ của MySQL
             user=os.getenv("DB_USER"),  # Tên người dùng
             password=os.getenv("DB_PASSWORD"),  # Mật khẩu
-            database=database  # Tên cơ sở dữ liệu
+            database=database,  # Tên cơ sở dữ liệu
         )
         cursor = conn.cursor()
 
