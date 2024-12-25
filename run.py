@@ -24,16 +24,8 @@ def get_db_connection():
 
 @app.route('/')
 def index():
-    # Truy vấn cơ sở dữ liệu
-    conn = get_db_connection()
-    cursor = conn.cursor(dictionary=True)
-    cursor.execute('SELECT * FROM Users')  # Thay 'your_table' bằng tên bảng của bạn
-    rows = cursor.fetchall()
-    cursor.close()
-    conn.close()
-    
-    # Trả về dữ liệu dưới dạng JSON
-    return jsonify(rows)
+    return "Hello, World!"
+
 
 if __name__ == "__main__":
     app.run(debug=True)
