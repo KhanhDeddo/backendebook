@@ -13,8 +13,7 @@ def create_app():
     app = Flask(__name__)
 
     # Cấu hình cơ sở dữ liệu
-    # app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv('DATABASE_URL', 'sqlite:///ebook.db')
-    app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv('DATABASE_URL', 'mysql://<username>:<password>@<host>/<database_name>')
+    app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv('DATABASE_URL')
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
     db.init_app(app)
@@ -31,8 +30,5 @@ def create_app():
 
     from .routes import api_bp
     app.register_blueprint(api_bp, url_prefix='/')
-
-    # from .routes_admin import api_admin
-    # app.register_blueprint(api_admin, url_prefix='/api/admin')
 
     return app

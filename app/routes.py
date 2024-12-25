@@ -2,45 +2,10 @@ from flask import Blueprint, request, jsonify
 from app import db, mail
 from flask_mail import Message
 from .models import Book, User, Order, Cart,CartItem,OrderItem
-import smtplib
-# import dns.resolver
 api_bp = Blueprint('api', __name__)
 
 def error_response(message, status_code):
     return jsonify({"error": message}), status_code
-# ----------------------------------------------------------------------------------
-# @api_bp.route('/check-email', methods=['POST'])
-# def check_email_exists():
-#     data = request.get_json()  # Lấy dữ liệu JSON từ body của request
-#     email = data.get('email')  # Lấy email từ dữ liệu JSON
-    
-#     if not email:
-#         return jsonify({"error": "Email is required"}), 400
-
-#     domain = email.split('@')[1]
-    
-#     try:
-#         # Kiểm tra MX records của domain
-#         answers = dns.resolver.resolve(domain, 'MX')
-#         mx_record = str(answers[0].exchange)
-        
-#         # Kết nối tới máy chủ SMTP
-#         server = smtplib.SMTP(mx_record, 587587)
-#         server.set_debuglevel(0)
-#         server.helo()
-#         server.mail('you@example.com')  # Thay đổi với email của bạn
-#         code, message = server.rcpt(email)
-#         server.quit()
-        
-#         # Kiểm tra mã trả về
-#         if code == 250:
-#             return jsonify({"message": f"Email {email} exists."}), 200  # Email tồn tại
-#         else:
-#             return jsonify({"message": f"Email {email} does not exist."}), 404  # Email không tồn tại
-#     except dns.resolver.NoAnswer:
-#         return jsonify({"error": "MX records not found for domain"}), 400
-#     except Exception as e:
-#         return jsonify({"error": str(e)}), 500
 # ----------------------------------------------------------------------------------
 # Route Send Mail
 @api_bp.route('/send-email', methods=['POST'])

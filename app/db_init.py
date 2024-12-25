@@ -48,7 +48,7 @@ def init_db():
     """
     Hàm khởi tạo cơ sở dữ liệu và chạy các tệp SQL từ thư mục migrations.
     """
-    database = "buexakx7blzh8zlp6rcd"  # Tên cơ sở dữ liệu MySQL
+    database = os.getenv("DB_NAME")  # Tên cơ sở dữ liệu MySQL
 
     # Kiểm tra xem cơ sở dữ liệu có tồn tại không (bạn có thể kiểm tra nếu cần)
     print(f"Tạo mới cơ sở dữ liệu {database}...")
