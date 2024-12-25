@@ -27,7 +27,7 @@ def index():
     # Truy vấn cơ sở dữ liệu
     conn = get_db_connection()
     cursor = conn.cursor(dictionary=True)
-    cursor.execute('SELECT * FROM Users')  # Thay 'your_table' bằng tên bảng của bạn
+    cursor.execute('SELECT * FROM Order_Items')  # Thay 'your_table' bằng tên bảng của bạn
     rows = cursor.fetchall()
     cursor.close()
     conn.close()
