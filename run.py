@@ -20,17 +20,17 @@ def get_db_connection():
 
 @app.route('/')
 def index():
-    # # Truy vấn cơ sở dữ liệu
-    # conn = get_db_connection()
-    # cursor = conn.cursor(dictionary=True)
-    # cursor.execute('SELECT * FROM Users')  # Thay 'your_table' bằng tên bảng của bạn
-    # rows = cursor.fetchall()
-    # cursor.close()
-    # conn.close()
+    # Truy vấn cơ sở dữ liệu
+    conn = get_db_connection()
+    cursor = conn.cursor(dictionary=True)
+    cursor.execute('SELECT * FROM Users')  # Thay 'your_table' bằng tên bảng của bạn
+    rows = cursor.fetchall()
+    cursor.close()
+    conn.close()
     
-    # # Trả về dữ liệu dưới dạng JSON
-    # return jsonify(rows)
-    return "haha"
+    # Trả về dữ liệu dưới dạng JSON
+    return jsonify(rows)
+    # return "haha"
 
 from waitress import serve
 if __name__ == "__main__":
