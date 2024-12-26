@@ -33,7 +33,6 @@ def index():
     return "haha"
 
 from waitress import serve
-
 if __name__ == "__main__":
     # # app.run(debug=True)
     serve(app, host='0.0.0.0', port=5000)  # Sử dụng Waitress để phục vụ ứng dụng
