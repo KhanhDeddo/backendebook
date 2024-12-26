@@ -1,2 +1,3 @@
 venv/
 /app/_pycharm_/
+.env/

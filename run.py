@@ -35,5 +35,9 @@ def index():
 from waitress import serve
 
 if __name__ == "__main__":
-    # app.run(debug=True)
-    serve(app, host='0.0.0.0', port=5000)  # Sử dụng Waitress để phục vụ ứng dụng
+    # # app.run(debug=True)
+    # serve(app, host='0.0.0.0', port=5000)  # Sử dụng Waitress để phục vụ ứng dụng
+    from waitress import serve
+    import os
+    port = int(os.environ.get("PORT", 5000))
+    serve(app, host="0.0.0.0", port=port)
