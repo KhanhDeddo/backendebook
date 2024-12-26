@@ -1,12 +1,7 @@
-# from flask_cors import CORS
-# from app import create_app
-# import os
-# app = create_app()
-# CORS(app)  # Cho phép tất cả các nguồn truy cập API
-
-# if __name__ == "__main__":
-#     app.run(host="0.0.0.0", port=int(os.environ.get("PORT", 5000)))
+from dotenv import load_dotenv
 import os
+load_dotenv()  # Tải các giá trị từ file .env vào môi trường
+
 from flask import Flask, jsonify
 import mysql.connector
 
@@ -18,7 +13,8 @@ def get_db_connection():
         host=os.getenv('DB_HOST'),
         user=os.getenv('DB_USER'),
         password=os.getenv('DB_PASSWORD'),
-        database=os.getenv('DB_NAME')
+        database=os.getenv('DB_NAME'),
+        port=int(os.getenv("PORT", 3306))  # Đảm bảo cổng được chuyển thành int
     )
     return connection
 
@@ -27,7 +23,7 @@ def index():
     # Truy vấn cơ sở dữ liệu
     conn = get_db_connection()
     cursor = conn.cursor(dictionary=True)
-    cursor.execute('SELECT * FROM Order_Items')  # Thay 'your_table' bằng tên bảng của bạn
+    cursor.execute('SELECT * FROM Users')  # Thay 'your_table' bằng tên bảng của bạn
     rows = cursor.fetchall()
     cursor.close()
     conn.close()
@@ -35,5 +31,7 @@ def index():
     # Trả về dữ liệu dưới dạng JSON
     return jsonify(rows)
 
+from waitress import serve
+
 if __name__ == "__main__":
-    app.run(debug=True)
+    serve(app, host='0.0.0.0', port=5000)  # Sử dụng Waitress để phục vụ ứng dụng
