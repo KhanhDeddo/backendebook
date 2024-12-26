@@ -1,21 +1,17 @@
+from dotenv import load_dotenv
 import mysql.connector
 import os
-from dotenv import load_dotenv
-
-# Nạp các biến môi trường từ .env
 load_dotenv()
 
-def execute_sql_file(database, file_path):
-    """
-    Thực thi một tệp SQL trên cơ sở dữ liệu MySQL.
-    """
+def execute_sql_file(file_path):
     try:
-        # Kết nối đến cơ sở dữ liệu MySQL sử dụng các biến môi trường
+        # Kết nối đến cơ sở dữ liệu MySQL
         conn = mysql.connector.connect(
-            host=os.getenv("DB_HOST"),  # Địa chỉ của MySQL
-            user=os.getenv("DB_USER"),  # Tên người dùng
-            password=os.getenv("DB_PASSWORD"),  # Mật khẩu
-            database=database,  # Tên cơ sở dữ liệu
+            host=os.getenv("DB_HOST"),  
+            user=os.getenv("DB_USER"),  
+            password=os.getenv("DB_PASSWORD"),  
+            database=os.getenv('DB_NAME'),
+            port=int(os.getenv("PORT"))
         )
         cursor = conn.cursor()
 
@@ -45,21 +41,11 @@ def execute_sql_file(database, file_path):
             conn.close()
 
 def init_db():
-    """
-    Hàm khởi tạo cơ sở dữ liệu và chạy các tệp SQL từ thư mục migrations.
-    """
-    database = os.getenv("DB_NAME")  # Tên cơ sở dữ liệu MySQL
-
-    # Kiểm tra xem cơ sở dữ liệu có tồn tại không (bạn có thể kiểm tra nếu cần)
+    database = os.getenv("DB_NAME") 
     print(f"Tạo mới cơ sở dữ liệu {database}...")
-
-    # Thực thi file schema.sql (tạo bảng)
-    execute_sql_file(database, "migrations/schema.sql")
-
-    # Thực thi file seed.sql (nếu có dữ liệu mẫu)
+    execute_sql_file("migrations/schema.sql")
     if os.path.exists("migrations/seed.sql"):
-        execute_sql_file(database, "migrations/seed.sql")
-
+        execute_sql_file("migrations/seed.sql")
     print(f"Khởi tạo cơ sở dữ liệu {database} hoàn tất.")
 
 if __name__ == "__main__":

@@ -27,14 +27,7 @@ cd .. tro ra thu muc cha
 │   ├── schema.sql           # Câu lệnh SQL để tạo bảng (dùng để khởi tạo DB)
 │   └── seed.sql             # Dữ liệu mẫu ban đầu (tùy chọn)
 │
-├── /tests                   # Chứa các tệp kiểm thử
-│   └── test_routes.py       # Test các API endpoint
-│
-├── /static                  # Chứa các tệp tĩnh (nếu cần)
-│
-├── /templates               # Chứa tệp HTML (nếu cần giao diện backend Flask)
-│
-├── app.py                   # Điểm khởi chạy ứng dụng Flask
+├── run.py                   # Điểm khởi chạy ứng dụng Flask
 ├── requirements.txt         # Danh sách các thư viện Python cần thiết
 ├── .gitignore               # Tệp để bỏ qua các file/folder không cần thiết trong Git
 └── README.md                # Hướng dẫn sử dụng dự án
