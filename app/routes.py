@@ -457,19 +457,19 @@ def get_products():
          return jsonify({"error": "Cart not found"}), 404
     return jsonify(entities_list), 200
 
-# @api_bp.route('/adminorder',methods=['POST'])
-# def get_carts():
-#     data = request.get_json()
-#     search = '%' + data['search'] + '%'
-#     orders= Order.query.filter(Order.recipient_name.like(search)).all()
-#     orders_list = [cart.to_dict() for cart in orders]
-#     if not orders:
-#          return jsonify({"error": "Cart not found"}), 404
+@api_bp.route('/adminorder',methods=['POST'])
+def get_carts():
+    data = request.get_json()
+    search = '%' + data['search'] + '%'
+    orders= Order.query.filter(Order.recipient_name.like(search)).all()
+    orders_list = [cart.to_dict() for cart in orders]
+    if not orders:
+         return jsonify({"error": "Cart not found"}), 404
 
-#     for order in orders_list:
-#         user = User.query.filter_by(user_id=order['user_id']).first()
-#         if user is None:
-#             order['user_name'] = "Ẩn danh"
-#         else:
-#             order['user_name'] = user.user_name
-#     return jsonify(orders_list), 200
+    for order in orders_list:
+        user = User.query.filter_by(user_id=order['user_id']).first()
+        if user is None:
+            order['user_name'] = "Ẩn danh"
+        else:
+            order['user_name'] = user.user_name
+    return jsonify(orders_list), 200
