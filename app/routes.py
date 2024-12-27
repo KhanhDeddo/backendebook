@@ -438,7 +438,7 @@ def get_recent_orders():
     recent_orders_list = [order.to_dict() for order in recent_orders]
     return jsonify(recent_orders_list), 200
 
-# Route để lấy danh sách 5 người dùng gần đây
+# Route để lấy danh sách 5 người dùng gần đâyy
 @api_bp.route('/user-recent', methods=['GET'])
 def get_recent_users():
     recent_users = User.query.order_by(User.created_at.desc()).limit(LIMIT_RECENT).all()
