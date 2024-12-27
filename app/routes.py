@@ -430,6 +430,8 @@ def dashboard():
     ), 201
 
 # ----------------------------------------------------------------------------------
+# Route Admin
+
 # Route để lấy danh sách 5 đơn hàng gần đây
 LIMIT_RECENT = 5
 @api_bp.route('/order-recent', methods=['GET'])
@@ -444,3 +446,13 @@ def get_recent_users():
     recent_users = User.query.order_by(User.created_at.desc()).limit(LIMIT_RECENT).all()
     recent_users_list = [user.to_dict() for user in recent_users]
     return jsonify(recent_users_list), 200
+
+@api_bp.route('/adminbook',methods=['POST'])
+def get_products():
+    data = request.get_json()
+    search = '%' + data['search'] + '%'
+    entities= Book.query.filter(Book.title.like(search)).all()
+    entities_list = [cart.to_dict() for cart in entities]
+    if not entities:
+         return jsonify({"error": "Cart not found"}), 404
+    return jsonify(entities_list), 200
