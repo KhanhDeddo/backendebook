@@ -411,7 +411,7 @@ def create_order_item():
         return jsonify({"error": f"Failed to create cart item: {str(e)}"}), 400
     
 # ----------------------------------------------------------------------------------
-# Route cho dashboard
+# Route để lấy thông tin dashboard
 @api_bp.route('/dashboard', methods=['GET'])
 def dashboard():
     orders = Order.query.count()
@@ -428,16 +428,19 @@ def dashboard():
             "item": item
         }
     ), 201
+
 # ----------------------------------------------------------------------------------
+# Route để lấy danh sách 5 đơn hàng gần đây
 LIMIT_RECENT = 5
 @api_bp.route('/order-recent', methods=['GET'])
-def OrderRecent():
-    entities = Order.query.order_by(Order.created_at.desc()).limit(LIMIT_RECENT).all()
-    entities_list = [order.to_dict() for order in entities]  # Chuyển mỗi book thành dict
-    return jsonify(entities_list), 200
+def get_recent_orders():
+    recent_orders = Order.query.order_by(Order.created_at.desc()).limit(LIMIT_RECENT).all()
+    recent_orders_list = [order.to_dict() for order in recent_orders]
+    return jsonify(recent_orders_list), 200
 
+# Route để lấy danh sách 5 người dùng gần đây
 @api_bp.route('/user-recent', methods=['GET'])
-def UserRecent():
-    entities = User.query.limit(LIMIT_RECENT).all()
-    entities_list = [user.to_dict() for user in entities]  # Chuyển mỗi book thành dict
-    return jsonify(entities_list), 200
+def get_recent_users():
+    recent_users = User.query.order_by(User.created_at.desc()).limit(LIMIT_RECENT).all()
+    recent_users_list = [user.to_dict() for user in recent_users]
+    return jsonify(recent_users_list), 200
