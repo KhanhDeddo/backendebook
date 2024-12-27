@@ -458,7 +458,7 @@ def get_products():
     return jsonify(entities_list), 200
 
 @api_bp.route('/adminorder',methods=['POST'])
-def get_carts():
+def get_adminorder():
     data = request.get_json()
     search = '%' + data['search'] + '%'
     orders= Order.query.filter(Order.recipient_name.like(search)).all()
