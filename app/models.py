@@ -7,18 +7,20 @@ class User(db.Model):
     user_email = db.Column(db.String(100), nullable=False, unique=True)
     user_phone = db.Column(db.String(20), nullable=False, unique=True)
     user_password = db.Column(db.String(100), nullable=False)
-    user_date_of_birth = db.Column(db.String(20), nullable=False)
+    user_date_of_birth = db.Column(db.Date, nullable=False)  # Sử dụng kiểu Date
     user_gender = db.Column(db.String(10), nullable=False)
     user_address = db.Column(db.String(100), nullable=False)
-    user_is_admin = db.Column(db.Boolean, nullable=False)
+    user_is_admin = db.Column(db.Boolean, nullable=False, default=False)
+
     def to_dict(self):
         return {
             "user_id": self.user_id,
             "user_name": self.user_name,
             "user_email": self.user_email,
             "user_phone": self.user_phone,
-            "user_password": self.user_password, 
-            "user_date_of_birth": self.user_date_of_birth,
+            "user_password": self.user_password,
+            # Chuyển đổi user_date_of_birth thành chuỗi định dạng 'YYYY-MM-DD'
+            "user_date_of_birth": self.user_date_of_birth.strftime("%Y-%m-%d") if self.user_date_of_birth else None,
             "user_gender": self.user_gender,
             "user_address": self.user_address,
             "user_is_admin": self.user_is_admin

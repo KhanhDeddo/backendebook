@@ -409,3 +409,35 @@ def create_order_item():
     except Exception as e:
         db.session.rollback()  # Rollback nếu có lỗi
         return jsonify({"error": f"Failed to create cart item: {str(e)}"}), 400
+    
+# ----------------------------------------------------------------------------------
+# Route cho dashboard
+@api_bp.route('/dashboard', methods=['GET'])
+def dashboard():
+    orders = Order.query.count()
+    books  =  Book.query.all()
+    users = User.query.count()
+    item = 0
+    for book in books:
+        item += book.stock_quantity
+    return jsonify(
+        {
+            "order": orders,
+            "book" : len(books),
+            "user" : users,
+            "item": item
+        }
+    ), 201
+# ----------------------------------------------------------------------------------
+LIMIT_RECENT = 5
+@api_bp.route('/order-recent', methods=['GET'])
+def OrderRecent():
+    entities = Order.query.order_by(Order.created_at.desc()).limit(LIMIT_RECENT).all()
+    entities_list = [order.to_dict() for order in entities]  # Chuyển mỗi book thành dict
+    return jsonify(entities_list), 200
+
+@api_bp.route('/user-recent', methods=['GET'])
+def UserRecent():
+    entities = User.query.limit(LIMIT_RECENT).all()
+    entities_list = [user.to_dict() for user in entities]  # Chuyển mỗi book thành dict
+    return jsonify(entities_list), 200

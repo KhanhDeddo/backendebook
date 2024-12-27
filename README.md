@@ -1,7 +1,7 @@
 <!-- 
 python -m venv venv
 source venv/Scripts/activate
-pip install flask
+pip install flask requests
 pip install flask_sqlalchemy
 pip install flask-cors
 pip install Flask-Mail
