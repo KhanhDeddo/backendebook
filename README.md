@@ -9,9 +9,7 @@ pip install pymysql
 pip install python-dotenv
 pip install mysql-connector-python
 
-
 pip freeze > requirements.txt
-cd .. tro ra thu muc cha
 
 
 /project_name

@@ -430,8 +430,7 @@ def dashboard():
     ), 201
 
 # ----------------------------------------------------------------------------------
-#//Region Route Admin
-
+#Region Route Admin
 # Route cho dashboard
 @api_bp.route('/dashboard', methods=['GET'])
 def dashboard():
