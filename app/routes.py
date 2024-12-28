@@ -138,6 +138,7 @@ def create_book():
         # Tạo đối tượng sách mới
         new_book = Book(
             title=data['title'],
+            image_url=data['image_url'],
             status_book=data['status_book'],
             author=data['author'],
             description=data.get('description', ''),
@@ -156,7 +157,7 @@ def create_book():
         return jsonify({"error": f"Failed to create book: {str(e)}"}), 400
 
 # -------------------------------------------------------------------------------------
-# Router để Thêm sách mới
+# Router để cập nhật sách 
 @api_bp.route('/books/<int:book_id>', methods=['PUT'])
 def update_book(book_id):
     data = request.get_json()  # Nhận dữ liệu JSON từ client
@@ -172,6 +173,7 @@ def update_book(book_id):
 
         # Cập nhật thông tin sách
         book.title = data.get('title', book.title)
+        book.image_url = data.get('title', book.image_url)
         book.status_book = data.get('status_book', book.status_book)
         book.author = data.get('author', book.author)
         book.description = data.get('description', book.description)
