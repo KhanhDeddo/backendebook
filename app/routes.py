@@ -428,26 +428,6 @@ def dashboard():
             "item": item
         }
     ), 201
-
-# ----------------------------------------------------------------------------------
-#Region Route Admin
-# Route cho dashboard
-# @api_bp.route('/dashboard', methods=['GET'])
-# def dashboard():
-#     orders = Order.query.count()
-#     books  =  Book.query.all()
-#     users = User.query.count()
-#     item = 0
-#     for book in books:
-#         item += book.stock_quantity
-#     return jsonify(
-#         {
-#             "order": orders,
-#             "book" : len(books),
-#             "user" : users,
-#             "item": item
-#         }
-#     ), 201
 # Route để lấy danh sách 5 đơn hàng gần đây
 LIMIT_RECENT = 5
 @api_bp.route('/order-recent', methods=['GET'])
