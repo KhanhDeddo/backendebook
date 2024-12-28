@@ -130,17 +130,22 @@ def get_book_by_id(book_id):
 def create_book():
     data = request.get_json()  # Nhận dữ liệu JSON từ client
     try:
+        # Chuyển đổi các trường cần thiết sang kiểu số
+        price = int(data['price']) if 'price' in data and data['price'].isdigit() else 0
+        level_class = int(data['level_class']) if 'level_class' in data and data['level_class'].isdigit() else None
+        stock_quantity = int(data.get('stock_quantity', 0)) if str(data.get('stock_quantity', '0')).isdigit() else 0
+
         # Tạo đối tượng sách mới
         new_book = Book(
             title=data['title'],
-            status_book = data["status_book"],
+            status_book=data['status_book'],
             author=data['author'],
             description=data.get('description', ''),
-            price=data['price'],
+            price=price,
             category=data['category'],
-            level_class=data['level_class'],
+            level_class=level_class,
             level_school=data['level_school'],
-            stock_quantity=data.get('stock_quantity', 0),
+            stock_quantity=stock_quantity,
             publisher=data['publisher']
         )
         db.session.add(new_book)  # Thêm sách mới vào session
@@ -149,8 +154,9 @@ def create_book():
     except Exception as e:
         db.session.rollback()  # Hủy bỏ nếu có lỗi
         return jsonify({"error": f"Failed to create book: {str(e)}"}), 400
+
 # -------------------------------------------------------------------------------------
-# Route để cập nhật thông tin sách
+# Router để Thêm sách mới
 @api_bp.route('/books/<int:book_id>', methods=['PUT'])
 def update_book(book_id):
     data = request.get_json()  # Nhận dữ liệu JSON từ client
@@ -159,19 +165,26 @@ def update_book(book_id):
         return jsonify({"error": "Book not found"}), 404  # Nếu không tìm thấy sách
 
     try:
+        # Chuyển đổi các trường số trước khi cập nhật
+        price = int(data.get('price', book.price)) if str(data.get('price', '')).isdigit() else book.price
+        level_class = int(data.get('level_class', book.level_class)) if str(data.get('level_class', '')).isdigit() else book.level_class
+        stock_quantity = int(data.get('stock_quantity', book.stock_quantity)) if str(data.get('stock_quantity', '')).isdigit() else book.stock_quantity
+
         # Cập nhật thông tin sách
         book.title = data.get('title', book.title)
-        book.status_book = data.get('status_book',book.status_book)
+        book.status_book = data.get('status_book', book.status_book)
         book.author = data.get('author', book.author)
         book.description = data.get('description', book.description)
-        book.price = data.get('price', book.price)
+        book.price = price
         book.category = data.get('category', book.category)
-        book.level_class = data.get('level_class', book.level_class)
+        book.level_class = level_class
         book.level_school = data.get('level_school', book.level_school)
-        book.stock_quantity = data.get('stock_quantity', book.stock_quantity)
+        book.stock_quantity = stock_quantity
         book.publisher = data.get('publisher', book.publisher)
+
         db.session.commit()  # Lưu thay đổi vào database
         return jsonify(book.to_dict()), 200  # Trả về thông tin sách vừa cập nhật
+
     except Exception as e:
         db.session.rollback()  # Hủy bỏ nếu có lỗi
         return jsonify({"error": f"Failed to update book: {str(e)}"}), 400
