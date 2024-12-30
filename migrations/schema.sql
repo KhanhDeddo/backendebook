@@ -35,6 +35,7 @@ DROP TABLE IF EXISTS Orders;
 CREATE TABLE Orders (
     order_id INT PRIMARY KEY AUTO_INCREMENT,        -- Mã đơn hàng (khóa chính, tự động tăng)
     user_id INT NOT NULL,                           -- Mã người dùng (khóa ngoại)
+    payment_id_zalopay VARCHAR(50),                 -- Mã Thanh toan zalopay
     order_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP, -- Ngày đặt hàng
     status VARCHAR(50) NOT NULL DEFAULT 'Chờ xác nhận', -- Trạng thái đơn hàng
     total_price INT NOT NULL,                       -- Tổng giá trị đơn hàng

@@ -74,6 +74,7 @@ class Order(db.Model):
     user_id = db.Column(db.Integer, db.ForeignKey('Users.user_id'), nullable=False)  # Đảm bảo tên bảng là 'Users'
     order_date = db.Column(db.DateTime, default=db.func.current_timestamp())
     status = db.Column(db.String(100), nullable=False)
+    payment_id_zalopay = db.Column(db.String(100), nullable=False)
     total_price = db.Column(db.Integer, nullable=False)
     recipient_name = db.Column(db.Text, nullable=False)
     recipient_phone = db.Column(db.Text, nullable=False)
@@ -92,6 +93,7 @@ class Order(db.Model):
             "user_id": self.user_id,
             "order_date": self.order_date,
             "status": self.status,
+            "payment_id_zalopay": self.payment_id_zalopay,
             "total_price": (self.total_price),
             "recipient_name": self.recipient_name,
             "recipient_phone": self.recipient_phone,

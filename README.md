@@ -8,6 +8,7 @@ pip install Flask-Mail
 pip install pymysql
 pip install python-dotenv
 pip install mysql-connector-python
+pip install waitress
 
 pip freeze > requirements.txt
 

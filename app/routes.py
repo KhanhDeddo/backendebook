@@ -2,10 +2,93 @@ from flask import Blueprint, request, jsonify
 from app import db, mail
 from flask_mail import Message
 from .models import Book, User, Order, Cart,CartItem,OrderItem
+import os, json, time, hmac, hashlib, requests
+from dotenv import load_dotenv
+load_dotenv()
 api_bp = Blueprint('api', __name__)
 
 def error_response(message, status_code):
     return jsonify({"error": message}), status_code
+# ----------------------------------------------------------------------------------
+config = {
+            "app_id":int(os.getenv('app_id')),
+            "key1": os.getenv('key1'),
+            "key2": os.getenv('key2'),
+            "endpoint_create": os.getenv('endpoint_create'),
+            "endpoint_query":os.getenv('endpoint_query')
+        }
+# Route để tạo yêu cầu thanh toán
+@api_bp.route('/create_payment', methods=['POST'])
+def create_payment():
+    try:
+        data = request.get_json()
+        app_trans_id = data.get('app_trans_id')
+        app_user = data.get('app_user', 'test_user')
+        amount = int(data.get('amount', 10000))
+        description = data.get('description', 'Test payment')
+        embed_data = {"redirecturl": "https://ebookbydevkhanhdeddo.vercel.app/don-hang"}
+        item = data.get("item", [{}])
+
+        order = {
+            "app_id": config["app_id"],
+            "app_trans_id": app_trans_id,
+            "app_user": app_user,
+            "app_time": int(round(time.time() * 1000)),
+            "embed_data": json.dumps(embed_data),
+            "item": json.dumps(item),
+            "amount": amount*1000,
+            "description": f"EBook - Payment for the order #{app_trans_id} {description}",
+            "callback_url": "https://backendebook.vercel.app/callback",
+        }
+
+        # Tạo chữ ký mac
+        data = "{}|{}|{}|{}|{}|{}|{}".format(
+            order["app_id"], order["app_trans_id"], order["app_user"],
+            order["amount"], order["app_time"], order["embed_data"], order["item"]
+        )
+        order["mac"] = hmac.new(config['key1'].encode(), data.encode(), hashlib.sha256).hexdigest()
+
+        # Gửi yêu cầu POST đến ZaloPay API
+        response = requests.post(config["endpoint_create"], json=order)
+        response.raise_for_status()  # Kiểm tra nếu có lỗi xảy ra
+        result = response.json()
+        print("Kết quả từ ZaloPay API:", result)
+        return jsonify(result)
+    except Exception as e:
+        print("Lỗi hệ thống:", e)
+        return jsonify({"error": "Internal server error", "details": str(e)}), 500
+# ----------------------------------------------------------------------------------
+@api_bp.route('/callback', methods=['POST'])
+def callback():
+    result = {}
+    print("Callback received!")
+    try:
+        cbdata = request.json
+        mac = hmac.new(config['key2'].encode(), cbdata['data'].encode(), hashlib.sha256).hexdigest()
+
+        # kiểm tra callback hợp lệ (đến từ ZaloPay server)
+        if mac != cbdata['mac']:
+            result['return_code'] = -1
+            result['return_message'] = 'mac not equal'
+        else:
+            # thanh toán thành công
+            # merchant cập nhật trạng thái cho đơn hàng
+            dataJson = json.loads(cbdata['data'])
+            print("Update order's status = success where app_trans_id =", dataJson['app_trans_id'])
+            result['return_code'] = 1
+            result['return_message'] = 'success'
+    except Exception as e:
+        result['return_code'] = 0  # ZaloPay server sẽ callback lại (tối đa 3 lần)
+        result['error'] = str(e)
+
+    print("Callback response:", result)
+    if(result['return_message'] ==  'success'):
+        order = Order.query.filter_by(payment_id_zalopay=dataJson['app_trans_id'])
+        order.status = "Đã xác nhận"
+        order.payment_status = "Đã thanh toán"
+        db.session.commit()
+
+    return jsonify(result)
 # ----------------------------------------------------------------------------------
 # Route Send Mail
 @api_bp.route('/send-email', methods=['POST'])
@@ -352,6 +435,7 @@ def get_orders_by_user_id(user_id):
 @api_bp.route('/orders', methods=['POST'])
 def create_order():
     data = request.get_json()
+    print(data)
     try:
         new_order = Order(
             user_id=data['user_id'],
@@ -362,6 +446,7 @@ def create_order():
             payment_method=data['payment_method'],
             total_price=data.get('total_price', 0.0),
             status=data.get('status', 'Chờ xác nhận'),
+            payment_id_zalopay = data['payment_id_zalopay'],
             payment_status=data.get('payment_status', 'Chưa thanh toán')
         )
         db.session.add(new_order)
