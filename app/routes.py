@@ -15,7 +15,8 @@ config = {
             "key1": os.getenv('key1'),
             "key2": os.getenv('key2'),
             "endpoint_create": os.getenv('endpoint_create'),
-            "endpoint_query":os.getenv('endpoint_query')
+            "endpoint_query":os.getenv('endpoint_query'),
+            "callback_url": os.getenv('callback_url')
         }
 # Route để tạo yêu cầu thanh toán
 @api_bp.route('/create_payment', methods=['POST'])
@@ -38,7 +39,7 @@ def create_payment():
             "item": json.dumps(item),
             "amount": amount*1000,
             "description": f"EBook - Payment for the order #{app_trans_id} {description}",
-            "callback_url": "https://backendebook.vercel.app/callback",
+            "callback_url": config['callback_url'],
         }
 
         # Tạo chữ ký mac
