@@ -25,7 +25,7 @@ def create_payment():
         data = request.get_json()
         app_trans_id = data.get('app_trans_id')
         app_user = data.get('app_user', 'test_user')
-        amount = int(data.get('amount', 10000))
+        amount = int(data.get('amount'))
         description = data.get('description', 'Test payment')
         embed_data = {"redirecturl": "https://ebookbydevkhanhdeddo.vercel.app/don-hang"}
         item = data.get("item", [{}])
@@ -37,7 +37,7 @@ def create_payment():
             "app_time": int(round(time.time() * 1000)),
             "embed_data": json.dumps(embed_data),
             "item": json.dumps(item),
-            "amount": amount*1000,
+            "amount": amount,
             "description": f"EBook - Payment for the order #{app_trans_id} {description}",
             "callback_url": config['callback_url'],
         }
