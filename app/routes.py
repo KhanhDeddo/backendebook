@@ -84,7 +84,9 @@ def callback():
 
     print("Callback response:", result)
     if(result['return_message'] ==  'success'):
-        order = Order.query.filter_by(payment_id_zalopay=dataJson['app_trans_id'])
+        order = Order.query.filter_by(payment_id_zalopay=dataJson['app_trans_id']).first()
+        if not order:
+            return jsonify({"error": "Order not found"}), 404
         order.status = "Đã xác nhận"
         order.payment_status = "Đã thanh toán"
         db.session.commit()
