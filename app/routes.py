@@ -37,7 +37,7 @@ def create_payment():
             "app_time": int(round(time.time() * 1000)),
             "embed_data": json.dumps(embed_data),
             "item": json.dumps(item),
-            "amount": amount,
+            "amount": amount*1000,
             "description": f"EBook - Payment for the order #{app_trans_id} {description}",
             "callback_url": config['callback_url'],
         }
