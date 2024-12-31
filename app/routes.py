@@ -59,37 +59,37 @@ def create_payment():
         print("Lỗi hệ thống:", e)
         return jsonify({"error": "Internal server error", "details": str(e)}), 500
 # ----------------------------------------------------------------------------------
-# @api_bp.route('/callback', methods=['POST'])
-# def callback():
-#     result = {}
-#     print("Callback received!")
-#     try:
-#         cbdata = request.json
-#         mac = hmac.new(config['key2'].encode(), cbdata['data'].encode(), hashlib.sha256).hexdigest()
+@api_bp.route('/callback', methods=['POST'])
+def callback():
+    result = {}
+    print("Callback received!")
+    try:
+        cbdata = request.json
+        mac = hmac.new(config['key2'].encode(), cbdata['data'].encode(), hashlib.sha256).hexdigest()
 
-#         # kiểm tra callback hợp lệ (đến từ ZaloPay server)
-#         if mac != cbdata['mac']:
-#             result['return_code'] = -1
-#             result['return_message'] = 'mac not equal'
-#         else:
-#             # thanh toán thành công
-#             # merchant cập nhật trạng thái cho đơn hàng
-#             dataJson = json.loads(cbdata['data'])
-#             print("Update order's status = success where app_trans_id =", dataJson['app_trans_id'])
-#             result['return_code'] = 1
-#             result['return_message'] = 'success'
-#     except Exception as e:
-#         result['return_code'] = 0  # ZaloPay server sẽ callback lại (tối đa 3 lần)
-#         result['error'] = str(e)
+        # kiểm tra callback hợp lệ (đến từ ZaloPay server)
+        if mac != cbdata['mac']:
+            result['return_code'] = -1
+            result['return_message'] = 'mac not equal'
+        else:
+            # thanh toán thành công
+            # merchant cập nhật trạng thái cho đơn hàng
+            dataJson = json.loads(cbdata['data'])
+            print("Update order's status = success where app_trans_id =", dataJson['app_trans_id'])
+            result['return_code'] = 1
+            result['return_message'] = 'success'
+    except Exception as e:
+        result['return_code'] = 0  # ZaloPay server sẽ callback lại (tối đa 3 lần)
+        result['error'] = str(e)
 
-#     print("Callback response:", result)
-#     if(result['return_message'] ==  'success'):
-#         order = Order.query.filter_by(payment_id_zalopay=dataJson['app_trans_id'])
-#         order.status = "Đã xác nhận"
-#         order.payment_status = "Đã thanh toán"
-#         db.session.commit()
+    print("Callback response:", result)
+    if(result['return_message'] ==  'success'):
+        order = Order.query.filter_by(payment_id_zalopay=dataJson['app_trans_id'])
+        order.status = "Đã xác nhận"
+        order.payment_status = "Đã thanh toán"
+        db.session.commit()
 
-#     return jsonify(result)
+    return jsonify(result)
 # ----------------------------------------------------------------------------------
 # Route Send Mail
 @api_bp.route('/send-email', methods=['POST'])
